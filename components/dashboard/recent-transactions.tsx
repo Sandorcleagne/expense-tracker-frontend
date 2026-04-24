@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -8,8 +10,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { transactions } from "@/lib/dummy-data";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 5;
 
 const statusStyles: Record<string, string> = {
     completed: "bg-green-50 text-green-700",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
     TrendingUp,
     TrendingDown,
@@ -44,7 +45,10 @@ import {
     topExpenseCategories,
     monthlyData,
 } from "@/lib/dummy-data";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 5;
 
 function formatCurrency(value: number): string {
     return new Intl.NumberFormat("en-US", {
@@ -56,12 +60,19 @@ function formatCurrency(value: number): string {
 }
 
 export function ReportsPageContent() {
+    const [currentPage, setCurrentPage] = useState(1);
     const totalIncome = reportSummary.reduce((s, r) => s + r.income, 0);
     const totalExpenses = reportSummary.reduce((s, r) => s + r.expenses, 0);
     const totalSavings = reportSummary.reduce((s, r) => s + r.savings, 0);
     const avgSavingsRate =
         reportSummary.reduce((s, r) => s + r.savingsRate, 0) /
         reportSummary.length;
+
+    const totalPages = Math.ceil(reportSummary.length / PAGE_SIZE);
+    const paginatedReports = reportSummary.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE
+    );
 
     return (
         <div className="space-y-6">
@@ -409,7 +420,7 @@ export function ReportsPageContent() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {reportSummary.map((row) => (
+                            {paginatedReports.map((row) => (
                                 <TableRow key={row.month}>
                                     <TableCell className="font-medium text-gray-900">
                                         {row.month} 2026
@@ -441,6 +452,14 @@ export function ReportsPageContent() {
                             ))}
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={reportSummary.length}
+                        pageSize={PAGE_SIZE}
+                        onPageChange={setCurrentPage}
+                    />
                 </CardContent>
             </Card>
         </div>

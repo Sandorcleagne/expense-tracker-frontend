@@ -36,7 +36,10 @@ import {
 } from "@/components/ui/table";
 import { incomeSources, incomeByCategory, monthlyData } from "@/lib/dummy-data";
 import { AddIncomeModal } from "./add-income-modal";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 5;
 
 const statusStyles: Record<string, string> = {
     received: "bg-green-50 text-green-700",
@@ -63,6 +66,7 @@ function formatCurrency(value: number): string {
 
 export function IncomePageContent() {
     const [incomeModalOpen, setIncomeModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const totalIncome = incomeSources.reduce((sum, s) => sum + s.amount, 0);
     const recurringIncome = incomeSources
         .filter((s) => s.recurring)
@@ -75,6 +79,12 @@ export function IncomePageContent() {
         month: m.month,
         income: m.income,
     }));
+
+    const totalPages = Math.ceil(incomeSources.length / PAGE_SIZE);
+    const paginatedIncome = incomeSources.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE
+    );
 
     return (
         <div className="space-y-6">
@@ -322,7 +332,7 @@ export function IncomePageContent() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {incomeSources.map((src) => (
+                            {paginatedIncome.map((src) => (
                                 <TableRow key={src.id}>
                                     <TableCell className="font-medium text-gray-900">
                                         {src.source}
@@ -361,6 +371,14 @@ export function IncomePageContent() {
                             ))}
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={incomeSources.length}
+                        pageSize={PAGE_SIZE}
+                        onPageChange={setCurrentPage}
+                    />
                 </CardContent>
             </Card>
 

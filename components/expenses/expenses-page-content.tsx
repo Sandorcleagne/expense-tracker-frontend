@@ -27,7 +27,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { allExpenses, categoryData } from "@/lib/dummy-data";
 import { AddExpenseModal } from "./add-expense-modal";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 5;
 
 const statusStyles: Record<string, string> = {
     completed: "bg-green-50 text-green-700",
@@ -56,6 +59,7 @@ export function ExpensesPageContent() {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [search, setSearch] = useState("");
     const [expenseModalOpen, setExpenseModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filtered = allExpenses.filter((tx) => {
         const matchesCategory =
@@ -65,6 +69,23 @@ export function ExpensesPageContent() {
             .includes(search.toLowerCase());
         return matchesCategory && matchesSearch;
     });
+
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const paginatedExpenses = filtered.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE
+    );
+
+    // Reset to page 1 when filters change
+    function handleCategoryChange(cat: string) {
+        setSelectedCategory(cat);
+        setCurrentPage(1);
+    }
+
+    function handleSearchChange(value: string) {
+        setSearch(value);
+        setCurrentPage(1);
+    }
 
     const totalExpenses = allExpenses.reduce(
         (sum, tx) => sum + Math.abs(tx.amount),
@@ -178,7 +199,7 @@ export function ExpensesPageContent() {
                                 placeholder="Search expenses..."
                                 className="pl-9"
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                             />
                         </div>
                         <div className="flex items-center gap-2">
@@ -187,7 +208,7 @@ export function ExpensesPageContent() {
                                 {categories.map((cat) => (
                                     <button
                                         key={cat}
-                                        onClick={() => setSelectedCategory(cat)}
+                                        onClick={() => handleCategoryChange(cat)}
                                         className={cn(
                                             "rounded-full px-3 py-1 text-xs font-medium transition-colors",
                                             selectedCategory === cat
@@ -216,7 +237,7 @@ export function ExpensesPageContent() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filtered.map((tx) => (
+                            {paginatedExpenses.map((tx) => (
                                 <TableRow key={tx.id}>
                                     <TableCell className="text-gray-500">
                                         {formatDate(tx.date)}
@@ -256,6 +277,14 @@ export function ExpensesPageContent() {
                             )}
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={filtered.length}
+                        pageSize={PAGE_SIZE}
+                        onPageChange={setCurrentPage}
+                    />
                 </CardContent>
             </Card>
 
