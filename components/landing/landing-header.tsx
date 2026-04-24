@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Wallet, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AuthModal } from "./auth-modal";
 
 const navLinks = [
     { label: "Features", href: "#features" },
@@ -12,8 +13,18 @@ const navLinks = [
     { label: "Pricing", href: "#pricing" },
 ];
 
+type AuthMode = "login" | "register";
+
 export function LandingHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [authOpen, setAuthOpen] = useState(false);
+    const [authMode, setAuthMode] = useState<AuthMode>("login");
+
+    function openAuth(mode: AuthMode) {
+        setAuthMode(mode);
+        setAuthOpen(true);
+        setMobileOpen(false);
+    }
 
     return (
         <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/80 backdrop-blur-md">
@@ -41,18 +52,18 @@ export function LandingHeader() {
 
                 {/* Desktop CTA */}
                 <div className="hidden items-center gap-3 md:flex">
-                    <Link
-                        href="/dashboard"
+                    <button
+                        onClick={() => openAuth("login")}
                         className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
                     >
                         Log in
-                    </Link>
-                    <Link
-                        href="/dashboard"
+                    </button>
+                    <button
+                        onClick={() => openAuth("register")}
                         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
                     >
                         Get Started Free
-                    </Link>
+                    </button>
                 </div>
 
                 {/* Mobile menu button */}
@@ -84,23 +95,29 @@ export function LandingHeader() {
                             </a>
                         ))}
                         <hr className="my-2 border-gray-100" />
-                        <Link
-                            href="/dashboard"
-                            className="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                        <button
+                            onClick={() => openAuth("login")}
+                            className="rounded-lg px-3 py-2 text-left text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                         >
                             Log in
-                        </Link>
-                        <Link
-                            href="/dashboard"
+                        </button>
+                        <button
+                            onClick={() => openAuth("register")}
                             className={cn(
                                 "mt-1 rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-blue-700"
                             )}
                         >
                             Get Started Free
-                        </Link>
+                        </button>
                     </nav>
                 </div>
             )}
+
+            <AuthModal
+                open={authOpen}
+                onOpenChange={setAuthOpen}
+                defaultMode={authMode}
+            />
         </header>
     );
 }
