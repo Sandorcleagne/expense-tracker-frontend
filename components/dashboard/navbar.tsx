@@ -1,8 +1,9 @@
 "use client";
 
 import { Bell, Search, LogOut, User, CreditCard } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,6 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/app/store/authStore";
 
 interface NavbarProps {
     title?: string;
@@ -21,6 +23,28 @@ export function Navbar({
     title = "Dashboard",
     subtitle = "Welcome back, here\u2019s your financial overview",
 }: NavbarProps) {
+    const user = useAuthStore((s) => s.user);
+    const clearUser = useAuthStore((s) => s.clearUser);
+    const router = useRouter();
+
+    /** Generate initials from full name, e.g. "John Doe" → "JD" */
+    function getInitials(name: string) {
+        return name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2);
+    }
+
+    function handleLogout() {
+        clearUser();
+        router.push("/");
+    }
+
+    const displayName = user?.fullName ?? "User";
+    const initials = user ? getInitials(user.fullName) : "U";
+
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white/80 px-4 backdrop-blur-sm sm:px-6">
             {/* Left: Page title */}
@@ -58,10 +82,13 @@ export function Navbar({
                     <DropdownMenuTrigger asChild>
                         <button className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-gray-100">
                             <Avatar className="h-8 w-8">
-                                <AvatarFallback className="text-xs">JD</AvatarFallback>
+                                {user?.avatar && (
+                                    <AvatarImage src={user.avatar} alt={displayName} />
+                                )}
+                                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                             </Avatar>
                             <span className="hidden text-sm font-medium text-gray-700 sm:block">
-                                John Doe
+                                {displayName}
                             </span>
                         </button>
                     </DropdownMenuTrigger>
@@ -77,7 +104,10 @@ export function Navbar({
                             Billing
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem
+                            className="text-red-600 cursor-pointer"
+                            onClick={handleLogout}
+                        >
                             <LogOut className="mr-2 h-4 w-4" />
                             Log out
                         </DropdownMenuItem>
