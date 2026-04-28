@@ -14,6 +14,7 @@ import {
     Menu,
     X,
     Wallet,
+    Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ const sidebarItems = [
     { label: "Expenses", icon: Receipt, href: "/expenses" },
     { label: "Income", icon: TrendingUp, href: "/income" },
     { label: "Budgets", icon: PiggyBank, href: "/budgets" },
+    { label: "Accounts", icon: Landmark, href: "/accounts" },
     { label: "Reports", icon: BarChart3, href: "/reports" },
     { label: "Settings", icon: Settings, href: "/settings" },
 ];

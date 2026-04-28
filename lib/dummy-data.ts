@@ -5,6 +5,7 @@ import {
   IncomeSource,
   Budget,
   ReportSummary,
+  Account,
 } from "@/types";
 
 // ── Dashboard ────────────────────────────────────────────────────────
@@ -444,4 +445,70 @@ export const topExpenseCategories: CategoryData[] = [
   { name: "Shopping", value: 12400, color: "#a855f7" },
   { name: "Transport", value: 9800, color: "#3b82f6" },
   { name: "Entertainment", value: 7200, color: "#22c55e" },
+];
+
+
+// ── Accounts page ────────────────────────────────────────────────────
+
+export const accounts: Account[] = [
+  {
+    id: "acc1",
+    bankName: "Kotak Mahindra Bank",
+    accountType: "savings",
+    accountNumber: "XXXX XXXX 4521",
+    balance: 8450.75,
+    currency: "USD",
+    isDefault: true,
+    color: "#ef4444",
+    lastTransactionDate: "2026-04-20",
+    holderName: "John Doe",
+  },
+  {
+    id: "acc2",
+    bankName: "SBI",
+    accountType: "current",
+    accountNumber: "XXXX XXXX 7832",
+    balance: 3200.0,
+    currency: "USD",
+    isDefault: false,
+    color: "#3b82f6",
+    lastTransactionDate: "2026-04-18",
+    holderName: "John Doe",
+  },
+  {
+    id: "acc3",
+    bankName: "HDFC Bank",
+    accountType: "savings",
+    accountNumber: "XXXX XXXX 1190",
+    balance: 15320.5,
+    currency: "USD",
+    isDefault: false,
+    color: "#2563eb",
+    lastTransactionDate: "2026-04-19",
+    holderName: "John Doe",
+  },
+  {
+    id: "acc4",
+    bankName: "ICICI Bank",
+    accountType: "credit",
+    accountNumber: "XXXX XXXX 6643",
+    balance: -1240.0,
+    currency: "USD",
+    isDefault: false,
+    color: "#f97316",
+    lastTransactionDate: "2026-04-17",
+    holderName: "John Doe",
+  },
+  {
+    id: "acc5",
+    bankName: "Paytm Wallet",
+    accountType: "wallet",
+    accountNumber: "XXXX XXXX 9901",
+    balance: 520.3,
+    currency: "USD",
+    isDefault: false,
+    color: "#06b6d4",
+    lastTransactionDate: "2026-04-15",
+    holderName: "John Doe",
+  },
 ];

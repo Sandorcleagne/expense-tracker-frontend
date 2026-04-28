@@ -60,3 +60,16 @@ export interface ReportSummary {
   savings: number;
   savingsRate: number;
 }
+
+export interface Account {
+  id: string;
+  bankName: string;
+  accountType: "savings" | "current" | "credit" | "wallet";
+  accountNumber: string;
+  balance: number;
+  currency: string;
+  isDefault: boolean;
+  color: string;
+  lastTransactionDate: string;
+  holderName: string;
+}
