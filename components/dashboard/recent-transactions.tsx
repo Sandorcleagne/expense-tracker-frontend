@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -13,6 +15,7 @@ import { transactions } from "@/lib/dummy-data";
 import { cn } from "@/lib/utils";
 import { useTransactions } from "@/hooks/useTransaction";
 import { Transaction } from "@/types";
+import { AddTransactionModal } from "./add-transaction-modal";
 
 const PAGE_SIZE = 5;
 
@@ -41,15 +44,38 @@ function formatAmount(amount: number): string {
   return amount >= 0 ? `+${formatted}` : `-${formatted}`;
 }
 export function RecentTransactions() {
+  const [modalOpen, setModalOpen] = useState(false);
   const { data, isLoading, isError } = useTransactions({
     limit: PAGE_SIZE,
     skip: 0,
   });
-  if (isLoading) return <div>Loading...</div>; // add shimmer effect
-  if (isError) return <div>Error...</div>; // add error message with an icon of showing not data found
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error...</div>;
   if (data?.result?.transactions.length === 0)
-    // add add transaction button
-    return <div>No transactions</div>;
+    return (
+      <Card className="transition-shadow hover:shadow-md">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold text-gray-900">
+              Recent Transactions
+            </CardTitle>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              <Plus className="h-4 w-4" />
+              Add Transaction
+            </button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="py-8 text-center text-sm text-gray-500">
+            No transactions yet. Add your first one to get started.
+          </p>
+        </CardContent>
+        <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
+      </Card>
+    );
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
@@ -57,9 +83,18 @@ export function RecentTransactions() {
           <CardTitle className="text-base font-semibold text-gray-900">
             Recent Transactions
           </CardTitle>
-          <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
-            View All
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              <Plus className="h-4 w-4" />
+              Add Transaction
+            </button>
+            <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
+              View All
+            </button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -110,6 +145,7 @@ export function RecentTransactions() {
           </TableBody>
         </Table>
       </CardContent>
+      <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
     </Card>
   );
 }
