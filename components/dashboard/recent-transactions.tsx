@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import {
   Table,
@@ -10,12 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TablePagination } from "@/components/ui/table-pagination";
-import { transactions } from "@/lib/dummy-data";
 import { cn } from "@/lib/utils";
 import { useTransactions } from "@/hooks/useTransaction";
 import { Transaction } from "@/types";
 import { AddTransactionModal } from "./add-transaction-modal";
+import { useAccounts } from "@/hooks/useAccounts";
+import { useAccountStore } from "@/app/store/accountStore";
 
 const PAGE_SIZE = 5;
 
@@ -44,11 +44,18 @@ function formatAmount(amount: number): string {
   return amount >= 0 ? `+${formatted}` : `-${formatted}`;
 }
 export function RecentTransactions() {
+  const { setAccounts } = useAccountStore();
   const [modalOpen, setModalOpen] = useState(false);
   const { data, isLoading, isError } = useTransactions({
     limit: PAGE_SIZE,
     skip: 0,
   });
+  const { data: accounts } = useAccounts();
+  useEffect(() => {
+    if (accounts?.success && accounts.result && accounts.result.length > 0) {
+      setAccounts(accounts.result);
+    }
+  }, [accounts]);
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error...</div>;
   if (data?.result?.transactions.length === 0)
@@ -61,7 +68,7 @@ export function RecentTransactions() {
             </CardTitle>
             <button
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 cusror-pointer"
             >
               <Plus className="h-4 w-4" />
               Add Transaction
@@ -73,7 +80,9 @@ export function RecentTransactions() {
             No transactions yet. Add your first one to get started.
           </p>
         </CardContent>
-        <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
+        {modalOpen && (
+          <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
+        )}
       </Card>
     );
   return (
@@ -86,12 +95,12 @@ export function RecentTransactions() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Add Transaction
             </button>
-            <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
+            <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 cursor-pointer">
               View All
             </button>
           </div>
@@ -112,7 +121,7 @@ export function RecentTransactions() {
             {data?.result?.transactions?.map((tx: Transaction) => (
               <TableRow key={tx._id}>
                 <TableCell className="text-gray-500">
-                  {formatDate(tx.createdAt || "")}
+                  {tx.transactionDate ? formatDate(tx.transactionDate) : ""}
                 </TableCell>
                 <TableCell className="font-medium text-gray-900">
                   {tx.description}
@@ -145,7 +154,9 @@ export function RecentTransactions() {
           </TableBody>
         </Table>
       </CardContent>
-      <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
+      {modalOpen && (
+        <AddTransactionModal open={modalOpen} onOpenChange={setModalOpen} />
+      )}
     </Card>
   );
 }

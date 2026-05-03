@@ -1,6 +1,7 @@
 export interface Transaction {
   _id?: string;
   createdAt?: string;
+  transactionDate?: string;
   description: string;
   category: string;
   amount: number;
