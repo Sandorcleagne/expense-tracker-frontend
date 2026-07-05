@@ -63,14 +63,35 @@ export interface ReportSummary {
 }
 
 export interface Account {
-  id: string;
-  bankName: string;
-  accountType: "savings" | "current" | "credit" | "wallet";
-  accountNumber: string;
+  _id: string;
+  type: "SAVING" | "CURRENT" | "CREDIT";
+  name: string;
   balance: number;
-  currency: string;
   isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
   color: string;
-  lastTransactionDate: string;
-  holderName: string;
+  __v: number;
+}
+
+export interface ApiResponse<T> {
+  status: boolean;
+  message: string;
+  result: T;
+}
+
+export interface Category {
+  _id: string;
+  categoryName: string;
+  color: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface CategoriesResult {
+  categories: Category[];
+  count: number;
+  remaining: number;
 }

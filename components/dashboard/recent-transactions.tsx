@@ -16,6 +16,8 @@ import { Transaction } from "@/types";
 import { AddTransactionModal } from "./add-transaction-modal";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useAccountStore } from "@/app/store/accountStore";
+import { useRouter } from "next/navigation";
+import { useCategories } from "@/hooks/useCategories";
 
 const PAGE_SIZE = 5;
 
@@ -44,21 +46,16 @@ function formatAmount(amount: number): string {
   return amount >= 0 ? `+${formatted}` : `-${formatted}`;
 }
 export function RecentTransactions() {
-  const { setAccounts } = useAccountStore();
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const { data, isLoading, isError } = useTransactions({
     limit: PAGE_SIZE,
     skip: 0,
   });
-  const { data: accounts } = useAccounts();
-  useEffect(() => {
-    if (accounts?.success && accounts.result && accounts.result.length > 0) {
-      setAccounts(accounts.result);
-    }
-  }, [accounts]);
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error...</div>;
-  if (data?.result?.transactions.length === 0)
+  if (data?.result?.transactions?.length === 0)
     return (
       <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
@@ -100,7 +97,10 @@ export function RecentTransactions() {
               <Plus className="h-4 w-4" />
               Add Transaction
             </button>
-            <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 cursor-pointer">
+            <button
+              className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 cursor-pointer"
+              onClick={() => router.push("/transaction")}
+            >
               View All
             </button>
           </div>

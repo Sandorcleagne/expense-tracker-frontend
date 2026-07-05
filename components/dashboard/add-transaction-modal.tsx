@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { DollarSign, FileText, Tag, Loader2, Wallet } from "lucide-react";
+import {
+  DollarSign,
+  FileText,
+  Tag,
+  Loader2,
+  Wallet,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,50 +21,73 @@ import {
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
-import { useAccountStore } from "@/app/store/accountStore";
 import { useCreateTransaction } from "@/hooks/useTransaction";
 import { toast } from "sonner";
+import { useAccounts } from "@/hooks/useAccounts";
+import { useCategories } from "@/hooks/useCategories";
 
 type TransactionType = "expense" | "income";
-
-const expenseCategories = [
-  "FOOD",
-  "RENT",
-  "TRAVEL",
-  "SHOPPING",
-  "ENTERTAINMENT",
-  "BILLS",
-  "HEALTH",
-  "SALARY",
-  "FREELANCE",
-  "INVESTMENT",
-  "LOAN",
-  "GIFT",
-  "OTHER",
-];
-
-const incomeCategories = [
-  "Employment",
-  "Freelance",
-  "Investments",
-  "Real Estate",
-  "Side Hustle",
-  "Government",
-  "Gifts",
-  "Other",
-];
 
 interface AddTransactionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+// ── Reusable skeleton & error primitives ──────────────────────────────────────
+
+function SelectSkeleton() {
+  return (
+    <div className="h-9 w-full animate-pulse rounded-lg border border-gray-200 bg-gray-100" />
+  );
+}
+
+function SelectError({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+      <div className="flex items-center gap-2 text-red-600">
+        <AlertCircle className="h-4 w-4 shrink-0" />
+        <span className="text-xs">{message}</span>
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="ml-2 flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+      >
+        <RefreshCw className="h-3 w-3" />
+        Retry
+      </button>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function AddTransactionModal({
   open,
   onOpenChange,
 }: AddTransactionModalProps) {
-  const { accounts } = useAccountStore();
   const createTransaction = useCreateTransaction();
+
+  const {
+    data: accounts,
+    isLoading: accountLoading,
+    isError: accountError,
+    refetch: refetchAccounts,
+  } = useAccounts();
+
+  const {
+    data: categories,
+    isLoading: categoryLoading,
+    isError: categoryError,
+    refetch: refetchCategories,
+  } = useCategories();
+
   const [type, setType] = useState<TransactionType>("expense");
   const [accountId, setAccountId] = useState("");
   const [description, setDescription] = useState("");
@@ -65,8 +96,7 @@ export function AddTransactionModal({
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [status, setStatus] = useState<"completed" | "pending">("completed");
   const [success, setSuccess] = useState(false);
-  const categories = type === "expense" ? expenseCategories : incomeCategories;
-
+  console.log("date", date);
   function resetForm() {
     setType("expense");
     setAccountId("");
@@ -78,7 +108,7 @@ export function AddTransactionModal({
     setSuccess(false);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     if (!date) return;
 
@@ -90,7 +120,7 @@ export function AddTransactionModal({
         category,
         status: status.toUpperCase(),
         accountId,
-        transactionDate: date.toISOString().split("T")[0],
+        transactionDate: date.toLocaleDateString("en-CA"),
       },
       {
         onSuccess: () => {
@@ -195,24 +225,33 @@ export function AddTransactionModal({
               <label className="text-sm font-medium text-gray-700">
                 Account
               </label>
-              <div className="relative">
-                <Wallet className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <select
-                  className="flex h-9 w-full appearance-none rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent"
-                  value={accountId}
-                  onChange={(e) => setAccountId(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Select an account
-                  </option>
-                  {accounts.map((acc) => (
-                    <option key={acc._id} value={acc._id}>
-                      {acc.name} — ₹{acc.balance.toLocaleString("en-IN")}
+              {accountLoading ? (
+                <SelectSkeleton />
+              ) : accountError ? (
+                <SelectError
+                  message="Failed to load accounts."
+                  onRetry={refetchAccounts}
+                />
+              ) : (
+                <div className="relative">
+                  <Wallet className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <select
+                    className="flex h-9 w-full appearance-none rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent"
+                    value={accountId}
+                    onChange={(e) => setAccountId(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Select an account
                     </option>
-                  ))}
-                </select>
-              </div>
+                    {accounts?.result?.map((acc) => (
+                      <option key={acc._id} value={acc._id}>
+                        {acc.name} — ₹{acc.balance.toLocaleString("en-IN")}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Description */}
@@ -251,6 +290,7 @@ export function AddTransactionModal({
                   className="pl-9"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
+                  onWheel={(e) => e.currentTarget.blur()}
                   required
                 />
               </div>
@@ -261,24 +301,33 @@ export function AddTransactionModal({
               <label className="text-sm font-medium text-gray-700">
                 Category
               </label>
-              <div className="relative">
-                <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <select
-                  className="flex h-9 w-full appearance-none rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Select a category
-                  </option>
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
+              {categoryLoading ? (
+                <SelectSkeleton />
+              ) : categoryError ? (
+                <SelectError
+                  message="Failed to load categories."
+                  onRetry={refetchCategories}
+                />
+              ) : (
+                <div className="relative">
+                  <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <select
+                    className="flex h-9 w-full appearance-none rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Select a category
                     </option>
-                  ))}
-                </select>
-              </div>
+                    {categories?.result?.categories?.map((cat) => (
+                      <option key={cat._id} value={cat.categoryName}>
+                        {cat.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Date */}
