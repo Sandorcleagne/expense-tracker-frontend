@@ -40,8 +40,8 @@ export const transactions: Transaction[] = [
     description: "Grocery Store",
     category: "Food",
     amount: -85.5,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "2",
@@ -49,8 +49,8 @@ export const transactions: Transaction[] = [
     description: "Monthly Salary",
     category: "Income",
     amount: 5200.0,
-    status: "completed",
-    type: "income",
+    status: "COMPLETED",
+    type: "INCOME",
   },
   {
     _id: "3",
@@ -58,8 +58,8 @@ export const transactions: Transaction[] = [
     description: "Electric Bill",
     category: "Bills",
     amount: -142.3,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "4",
@@ -67,8 +67,8 @@ export const transactions: Transaction[] = [
     description: "Uber Ride",
     category: "Transport",
     amount: -24.5,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "5",
@@ -76,8 +76,8 @@ export const transactions: Transaction[] = [
     description: "Netflix Subscription",
     category: "Entertainment",
     amount: -15.99,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "6",
@@ -85,8 +85,8 @@ export const transactions: Transaction[] = [
     description: "Freelance Payment",
     category: "Income",
     amount: 1200.0,
-    status: "pending",
-    type: "income",
+    status: "PENDING",
+    type: "INCOME",
   },
   {
     _id: "7",
@@ -94,8 +94,8 @@ export const transactions: Transaction[] = [
     description: "Amazon Purchase",
     category: "Shopping",
     amount: -67.8,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "8",
@@ -103,8 +103,8 @@ export const transactions: Transaction[] = [
     description: "Restaurant Dinner",
     category: "Food",
     amount: -52.4,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "9",
@@ -112,8 +112,8 @@ export const transactions: Transaction[] = [
     description: "Gas Station",
     category: "Transport",
     amount: -45.0,
-    status: "failed",
-    type: "expense",
+    status: "FAILED",
+    type: "EXPENSE",
   },
   {
     _id: "10",
@@ -121,8 +121,8 @@ export const transactions: Transaction[] = [
     description: "Water Bill",
     category: "Bills",
     amount: -38.9,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
 ];
 
@@ -140,15 +140,15 @@ export const summaryData = {
 // ── Expenses page ────────────────────────────────────────────────────
 
 export const allExpenses: Transaction[] = [
-  ...transactions.filter((t) => t.type === "expense"),
+  ...transactions.filter((t) => t.type === "EXPENSE"),
   {
     _id: "11",
     createdAt: "2026-04-10",
     description: "Gym Membership",
     category: "Health",
     amount: -49.99,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "12",
@@ -156,8 +156,8 @@ export const allExpenses: Transaction[] = [
     description: "Coffee Shop",
     category: "Food",
     amount: -12.5,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "13",
@@ -165,8 +165,8 @@ export const allExpenses: Transaction[] = [
     description: "Phone Bill",
     category: "Bills",
     amount: -65.0,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "14",
@@ -174,8 +174,8 @@ export const allExpenses: Transaction[] = [
     description: "Movie Tickets",
     category: "Entertainment",
     amount: -28.0,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "15",
@@ -183,8 +183,8 @@ export const allExpenses: Transaction[] = [
     description: "Clothing Store",
     category: "Shopping",
     amount: -134.5,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "16",
@@ -192,8 +192,8 @@ export const allExpenses: Transaction[] = [
     description: "Internet Bill",
     category: "Bills",
     amount: -79.99,
-    status: "pending",
-    type: "expense",
+    status: "PENDING",
+    type: "EXPENSE",
   },
   {
     _id: "17",
@@ -201,8 +201,8 @@ export const allExpenses: Transaction[] = [
     description: "Parking Fee",
     category: "Transport",
     amount: -15.0,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
   {
     _id: "18",
@@ -210,8 +210,8 @@ export const allExpenses: Transaction[] = [
     description: "Spotify Premium",
     category: "Entertainment",
     amount: -9.99,
-    status: "completed",
-    type: "expense",
+    status: "COMPLETED",
+    type: "EXPENSE",
   },
 ];
 

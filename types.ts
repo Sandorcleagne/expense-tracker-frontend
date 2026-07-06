@@ -5,8 +5,8 @@ export interface Transaction {
   description: string;
   category: string;
   amount: number;
-  status: "completed" | "pending" | "failed";
-  type: "income" | "expense";
+  status: "COMPLETED" | "PENDING" | "FAILED";
+  type: "INCOME" | "EXPENSE";
 }
 
 export interface MonthlyData {

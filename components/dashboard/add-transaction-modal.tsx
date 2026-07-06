@@ -96,7 +96,6 @@ export function AddTransactionModal({
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [status, setStatus] = useState<"completed" | "pending">("completed");
   const [success, setSuccess] = useState(false);
-  console.log("date", date);
   function resetForm() {
     setType("expense");
     setAccountId("");

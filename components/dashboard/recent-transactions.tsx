@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useTransactions } from "@/hooks/useTransaction";
 import { Transaction } from "@/types";
 import { AddTransactionModal } from "./add-transaction-modal";
@@ -38,13 +38,6 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatAmount(amount: number): string {
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(Math.abs(amount));
-  return amount >= 0 ? `+${formatted}` : `-${formatted}`;
-}
 export function RecentTransactions() {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
@@ -52,7 +45,6 @@ export function RecentTransactions() {
     limit: PAGE_SIZE,
     skip: 0,
   });
-
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error...</div>;
   if (data?.result?.transactions?.length === 0)
@@ -137,7 +129,9 @@ export function RecentTransactions() {
                     typeStyles[tx.type.toLowerCase()],
                   )}
                 >
-                  {formatAmount(tx.amount)}
+                  {tx.type === "EXPENSE"
+                    ? `-${formatCurrency(tx.amount)}`
+                    : `+${formatCurrency(tx.amount)}`}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   <span
