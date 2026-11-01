@@ -11,6 +11,14 @@ export default function DashboardPage() {
     now.getMonth() + 1,
     now.getFullYear(),
   );
+  const totalIncome = data?.monthlyChart?.reduce(
+    (accu, income) => accu + income.income,
+    0,
+  );
+  const totalExpense = data?.monthlyChart?.reduce(
+    (accu, expense) => accu + expense.expenses,
+    0,
+  );
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -22,15 +30,19 @@ export default function DashboardPage() {
         />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <ExpenseChart data={data?.monthlyChart} isLoading={false} />
-          </div>
-          <div>
-            <CategoryBreakdown
-              data={data?.spendingByCategory}
-              isLoading={false}
-            />
-          </div>
+          {(totalIncome !== 0 || totalExpense !== 0) && (
+            <div className="lg:col-span-2">
+              <ExpenseChart data={data?.monthlyChart} isLoading={false} />
+            </div>
+          )}
+          {data?.spendingByCategory?.length !== 0 && (
+            <div>
+              <CategoryBreakdown
+                data={data?.spendingByCategory}
+                isLoading={false}
+              />
+            </div>
+          )}
         </div>
 
         <RecentTransactions />

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import {
-  DollarSign,
   FileText,
   Tag,
   Loader2,
   Wallet,
   AlertCircle,
   RefreshCw,
+  IndianRupeeIcon,
 } from "lucide-react";
 import {
   Dialog,
@@ -280,7 +280,7 @@ export function AddTransactionModal({
                 Amount
               </label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <IndianRupeeIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <Input
                   type="number"
                   min="0.01"

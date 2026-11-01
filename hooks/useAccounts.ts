@@ -1,5 +1,9 @@
-import { accountService } from "@/lib/api/services/accountService";
-import { useQuery } from "@tanstack/react-query";
+import {
+  accountService,
+  createAccountParams,
+  updateAccountParams,
+} from "@/lib/api/services/accountService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Account, ApiResponse } from "@/types";
 
 export function useAccounts() {
@@ -13,3 +17,37 @@ export function useAccounts() {
   });
 }
 
+export function useCreateAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: createAccountParams) =>
+      accountService?.createAccount(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    },
+  });
+}
+
+export function useUpdateAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: updateAccountParams) =>
+      accountService.updateAccount(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    },
+  });
+}
+
+export function useDeleteAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => accountService.deleteAccount(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    },
+  });
+}

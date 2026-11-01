@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 interface Account {
   _id: string;
   name: string;
-  type: "SAVING" | "CURRENT" | "CREDIT"; // add more as needed
+  type: "savings" | "current" | "credit_card" | "cash" | "wallet"; // add more as needed
   balance: number;
   isDefault: boolean;
   userId: string;

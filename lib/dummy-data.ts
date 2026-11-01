@@ -453,7 +453,7 @@ export const accounts: Account[] = [
   {
     _id: "acc1",
     name: "Kotak Mahindra Bank",
-    type: "SAVING",
+    type: "savings",
     balance: 8450.75,
     isDefault: true,
     color: "#ef4444",
@@ -464,7 +464,7 @@ export const accounts: Account[] = [
   {
     _id: "acc2",
     name: "SBI",
-    type: "CURRENT",
+    type: "current",
     balance: 3200.0,
     isDefault: false,
     color: "#3b82f6",
@@ -475,7 +475,7 @@ export const accounts: Account[] = [
   {
     _id: "acc3",
     name: "HDFC Bank",
-    type: "SAVING",
+    type: "savings",
     balance: 15320.5,
     isDefault: false,
     color: "#2563eb",
@@ -486,7 +486,7 @@ export const accounts: Account[] = [
   {
     _id: "acc4",
     name: "ICICI Bank",
-    type: "CREDIT",
+    type: "credit_card",
     balance: -1240.0,
     isDefault: false,
     color: "#f97316",
@@ -497,7 +497,7 @@ export const accounts: Account[] = [
   {
     _id: "acc5",
     name: "Paytm Wallet",
-    type: "SAVING",
+    type: "savings",
     balance: 520.3,
     isDefault: false,
     color: "#06b6d4",

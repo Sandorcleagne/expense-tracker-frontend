@@ -64,13 +64,14 @@ export interface ReportSummary {
 
 export interface Account {
   _id: string;
-  type: "SAVING" | "CURRENT" | "CREDIT";
+  type: "savings" | "current" | "credit_card" | "cash" | "wallet";
   name: string;
   balance: number;
   isDefault: boolean;
   createdAt: string;
   updatedAt: string;
   color: string;
+  bankCode?: string;
   __v: number;
 }
 
